@@ -1,0 +1,55 @@
+﻿compiler :context {
+	token :aggregate {
+		[data] string :string
+
+
+	}
+
+	lexer :aggregate {
+		[behavior] lex :stream (filename) {
+			attach reader
+
+			reader.read(filename)
+		}
+
+		[data] currentToken :string
+
+		[on] character (character :string) {
+			@currentToken += character
+			emit tokenize @currentToken
+		}
+
+		[data] currentState :string
+
+		[on] tokenize (token :string) {
+			switch(token) {
+				case ":":
+					switch (@currentState) {
+						case "context":
+							emit setState "settingContext"
+							break
+						case "hasContext":
+							emit setState "settingAggregate"
+							break
+						default:
+							emit setState "errorState"
+					}
+					break
+				case "{":
+					switch (@currentState) {
+
+					}
+			}
+		}
+	}
+
+	reader :emitter {
+		[behavior] read :string (filename :string) {
+			File.exists(filename) {
+				ForEach(character := File.read(1, filename)) {
+					emit character character
+				}
+			}
+		}
+	}
+}
