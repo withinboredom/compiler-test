@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,11 +25,69 @@ namespace Compiler.Lib
 
         private void Init()
         {
+            Tree = new Hashtable()
+            {
+                { "data", new Hashtable()
+                {
+                    { "currentToken", "" },
+                    { "currentState", "data" }
+                } },
+                { "on", new Hashtable()
+                {
+                    { "character", new List<Hashtable> {
+                        new Hashtable()
+                    {
+                        { "call", "character" },
+                        { "emits", new List<string>
+                        {
+                            "tokenize"
+                        } },
+                        { "state", new Hashtable()
+                        {
+                            { "reads", new List<string>()
+                            {
+                                "currentToken"
+                            } },
+                            { "writes", new List<string>() }
+                        } }
+                    } } },
+                    { "tokenize", new List<Hashtable> {
+                        new Hashtable()
+                    {
+                        { "call", "tokenize" },
+                        { "emits", new List<string>()
+                        {
+                            "token"
+                        } },
+                        { "state", new Hashtable()
+                        {
+                            { "reads", new List<string>()
+                            {
+                                "currentState"
+                            } },
+                            { "writes", new List<string>()
+                            {
+                                "currentToken",
+                                "currentState"
+                            } }
+                        } }
+                    } }},
+                    { "token", new List<Hashtable> {
+                        new Hashtable()
+                    {
+                        { "call", "token" },
+                        { "emits" , new List<string>() },
+                        { "state", new Hashtable()
+                        {
+                            { "reads", new List<string>() },
+                            { "writes", new List<string>() }
+                        } }
+                    } }}
+                } }
+            };
+
             currentToken = "";
             currentState = "data";
-            ListenTo.Add("character");
-            ListenTo.Add("tokenize");
-            ListenTo.Add("token");
         }
 
         internal void character(Event ev)
