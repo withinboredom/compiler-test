@@ -175,7 +175,7 @@ namespace Source
                         ScheduleNow(WrapEvent(evt), transaction);
                     }
 
-                    Task.Delay(50);
+                    Task.Delay(50).Wait();
                     Pump();
                 }
             });
