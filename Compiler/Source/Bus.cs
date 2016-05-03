@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,39 +12,14 @@ namespace Source
     public class Bus
     {
         internal ConcurrentQueue<Event> Events = new ConcurrentQueue<Event>();
-        internal ReaderWriterLockSlim locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        internal ConcurrentExclusiveSchedulerPair scheduler = new ConcurrentExclusiveSchedulerPair();
+        internal TreeScheduler tree;
 
+        [DebuggerNonUserCode]
         public bool Apply(Event ev)
         {
-            locker.EnterReadLock();
-            Events.Enqueue(ev);
-            locker.ExitReadLock();
-
-            Pump();
-
+            tree?.ScheduleEmit(ev);
             return true;
-        }
-
-        public event EventHandler<Event> Emitted;
-
-        public void Pump()
-        {
-            Task.Run(() =>
-            {
-                if (locker.WaitingWriteCount == 0 && locker.RecursiveWriteCount == 0)
-                {
-                    locker.EnterWriteLock();
-                    while (Events.Count > 0)
-                    {
-                        Event ev;
-                        if (Events.TryDequeue(out ev))
-                            Emitted?.Invoke(null, ev);
-                    }
-                    Task.Delay(50);
-
-                    locker.ExitWriteLock();
-                }
-            });
         }
     }
 }

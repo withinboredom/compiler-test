@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,12 +14,19 @@ namespace Source
     {
         public Aggregate() : base()
         {
-            _bus.Emitted += BusOnEmitted;
+            Init();
+            _bus.tree = new TreeScheduler(Tree, @event =>
+            {
+                BusOnEmitted(this, @event);
+            });
         }
+
+        protected virtual void Init() { }
 
         protected List<string> ListenTo = new List<string>();
         protected Hashtable Tree;
 
+        [DebuggerStepperBoundary]
         private void BusOnEmitted(object sender, Event @event)
         {
             if (Tree == null) return;
@@ -39,19 +47,14 @@ namespace Source
                     BindingFlags.Instance);
                 method.Invoke(this, (new List<object> { @event }).ToArray());
             }
-
-            var task = new Task<bool>(() => true, new CancellationToken(), TaskCreationOptions.PreferFairness);
-            task.Start();
         }
 
         public Aggregate(Guid id) : base(id)
         {
-            _bus.Emitted += BusOnEmitted;
         }
 
         public void Dispose()
         {
-            _bus.Emitted -= BusOnEmitted;
         }
 
         public Emitter<TBus> Attach(Emitter<TBus> to)

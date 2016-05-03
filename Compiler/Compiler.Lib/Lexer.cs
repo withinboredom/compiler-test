@@ -23,7 +23,7 @@ namespace Compiler.Lib
         internal string currentToken;
         internal string currentState;
 
-        private void Init()
+        protected override void Init()
         {
             Tree = new Hashtable()
             {
@@ -101,7 +101,7 @@ namespace Compiler.Lib
         {
             var token = ev.Value as Dictionary<string, string>;
 
-            Console.WriteLine($"<{token["type"]}>{token["value"]}</{token["type"]}>");
+            Console.WriteLine($"<{token["kind"]}>{token["value"]}</{token["type"]}>");
         }
 
         internal void tokenize(Event ev)
@@ -176,16 +176,6 @@ namespace Compiler.Lib
                     }
                     break;
             }
-        }
-
-        public Lexer() : base()
-        {
-            Init();
-        }
-
-        public Lexer(Guid id) : base(id)
-        {
-            Init();
         }
     }
 }

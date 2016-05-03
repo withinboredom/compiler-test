@@ -45,7 +45,9 @@
     <Compile Include="Bus.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="Event.cs" />
+    <Compile Include="ConcurrentExclusiveInterleave.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TreeScheduler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
