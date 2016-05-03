@@ -7,6 +7,10 @@ using System.Diagnostics;
 
 namespace Source
 {
+    /// <summary>
+    /// Most basic kind of thing ... something that emits events
+    /// </summary>
+    /// <typeparam name="TBus"></typeparam>
     [DebuggerDisplay("Emitter NumEvents={NumberEventsEmitted}")]
     public class Emitter<TBus> where TBus : Bus, new()
     {
@@ -29,6 +33,13 @@ namespace Source
             _id = id;
         }
 
+        /// <summary>
+        /// Emit an event into the world
+        /// </summary>
+        /// <typeparam name="T">The type of the value of the event</typeparam>
+        /// <param name="name">The name of the event to emit</param>
+        /// <param name="value">The value of the event</param>
+        /// <returns></returns>
         [DebuggerStepperBoundary]
         protected Task Emit<T>(string name, T value)
         {
@@ -42,6 +53,10 @@ namespace Source
             }));
         }
 
+        /// <summary>
+        /// Change the attachments of this emitter
+        /// </summary>
+        /// <param name="bus"></param>
         [DebuggerStepperBoundary]
         internal void ChangeAttachment(TBus bus)
         {

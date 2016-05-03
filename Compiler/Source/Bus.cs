@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace Source
 {
+    /// <summary>
+    /// This class needs to be removed...
+    /// </summary>
     public class Bus
     {
-        internal ConcurrentQueue<Event> Events = new ConcurrentQueue<Event>();
-        internal ConcurrentExclusiveSchedulerPair scheduler = new ConcurrentExclusiveSchedulerPair();
         internal TreeScheduler tree;
 
         [DebuggerNonUserCode]

@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace Source
 {
+    /// <summary>
+    /// The dependence on the bus needs to be removed...
+    /// </summary>
+    /// <typeparam name="TBus"></typeparam>
     public class Aggregate<TBus> : Emitter<TBus>, IDisposable where TBus : Bus, new()
     {
         public Aggregate() : base()
@@ -21,11 +25,18 @@ namespace Source
             });
         }
 
+        /// <summary>
+        /// Inits the class with a state tree
+        /// </summary>
         protected virtual void Init() { }
 
-        protected List<string> ListenTo = new List<string>();
         protected Hashtable Tree;
 
+        /// <summary>
+        /// The default handler on emitted events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="event"></param>
         [DebuggerStepperBoundary]
         private void BusOnEmitted(object sender, Event @event)
         {
@@ -57,6 +68,11 @@ namespace Source
         {
         }
 
+        /// <summary>
+        /// Attaches a child to this bus ... needs to be refactored...
+        /// </summary>
+        /// <param name="to"></param>
+        /// <returns></returns>
         public Emitter<TBus> Attach(Emitter<TBus> to)
         {
             to.ChangeAttachment(_bus);

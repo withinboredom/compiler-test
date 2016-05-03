@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Source
 {
+    /// <summary>
+    /// An event
+    /// </summary>
     [DebuggerDisplay("Event Name={Name} From={FromGuid} Type={Type}")]
     [DataContract]
     public class Event
@@ -23,5 +26,13 @@ namespace Source
 
         [DataMember]
         public Guid FromGuid { get; set; }
+
+        [DataMember]
+        public DateTime Created { get; set; }
+
+        public Event()
+        {
+            Created = DateTime.Now;
+        }
     }
 }
